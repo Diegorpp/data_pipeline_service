@@ -1,0 +1,28 @@
+services:
+  data_pipeline_api: # Aplication definition where the API will be running
+    build:
+      context: .
+      dockerfile: dockerfile.yaml
+    container_name: data_pipeline_api
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/Project
+    networks:
+      - d_private_network
+    depends_on:
+      - db
+      
+  db: # Postgres database in which all the data will be stored and managed.
+    image: postgres:17.0
+    container_name: postgres
+    environment: # This should be a secrets or at least an .env file to store the data outside the repository.
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    networks:
+      - d_private_network
+
+networks:
+  d_private_network:

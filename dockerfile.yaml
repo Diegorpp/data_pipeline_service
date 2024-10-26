@@ -1,0 +1,10 @@
+FROM python:3.12.3
+
+WORKDIR /API
+
+COPY src main.py requirements.txt /API/
+
+# RUN pip install -r requirements
+
+CMD ["bash", "-f", "/dev/null"]
+
