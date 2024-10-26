@@ -1,3 +1,8 @@
+# My project gitignore list
+.env
+.my_env
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
