@@ -2,8 +2,14 @@ services:
   data_pipeline_api: # Aplication definition where the API will be running
     build:
       context: .
-      dockerfile: dockerfile.yaml
+      dockerfile: dockerfile_api
     container_name: data_pipeline_api
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
     ports:
       - 8000:8000
     volumes:
@@ -12,17 +18,57 @@ services:
       - d_private_network
     depends_on:
       - db
-      
+
+  consumer:
+    build:
+      context: .
+      dockerfile: dockerfile_consumer
+    container_name: consumer
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+    volumes:
+      - .:/Project
+    networks:
+      - d_private_network
+    depends_on:
+      - db
+
   db: # Postgres database in which all the data will be stored and managed.
     image: postgres:17.0
     container_name: postgres
     environment: # This should be a secrets or at least an .env file to store the data outside the repository.
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
     ports:
       - 5432:5432
     # volumes:
     #   - ./src/data/postgres_data:/var/lib/pgsql/data
+    networks:
+      - d_private_network
+
+  rabbitmq:
+    image: rabbitmq:4.0.2-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./src/data/rabbitmq_messages:/var/lib/rabbitmq
     networks:
       - d_private_network
 

@@ -1,0 +1,14 @@
+FROM python:3.12.3
+
+WORKDIR /API
+
+COPY src main.py requirements-api.txt /API/
+
+RUN pip install -r requirements-api.txt
+
+EXPOSE 8000
+
+CMD ["tail", "-f", "/dev/null"]
+
+# CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--workers", "4", "--bind", "0.0.0.0:8000", "main:app"]
+# gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 0.0.0.0:8000 main:app

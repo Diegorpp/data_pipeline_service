@@ -1,12 +1,10 @@
 FROM python:3.12.3
 
-WORKDIR /API
+WORKDIR /Consumer
 
-COPY src main.py requirements.txt /API/
+COPY src consumer.py /Consumer/
 
-RUN pip install -r requirements.txt
-
-EXPOSE 8000
+# RUN pip install -r requirements-consumer.txt
 
 CMD ["tail", "-f", "/dev/null"]
 
