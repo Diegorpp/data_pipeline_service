@@ -1,6 +1,8 @@
 # My project gitignore list
 .env
 .my_env
+src/data/*
+src/docs/data-engineering-challenge.pdf
 
 
 # Byte-compiled / optimized / DLL files

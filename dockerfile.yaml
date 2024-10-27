@@ -4,7 +4,11 @@ WORKDIR /API
 
 COPY src main.py requirements.txt /API/
 
-# RUN pip install -r requirements
+RUN pip install -r requirements.txt
 
-CMD ["bash", "-f", "/dev/null"]
+EXPOSE 8000
 
+CMD ["tail", "-f", "/dev/null"]
+
+# CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--workers", "4", "--bind", "0.0.0.0:8000", "main:app"]
+# gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 0.0.0.0:8000 main:app

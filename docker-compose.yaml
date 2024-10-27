@@ -21,8 +21,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
+    # volumes:
+    #   - ./src/data/postgres_data:/var/lib/pgsql/data
     networks:
       - d_private_network
 
 networks:
   d_private_network:
+    driver: bridge
+  
