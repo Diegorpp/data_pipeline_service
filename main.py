@@ -7,6 +7,7 @@ import io
 from src.db.crud import create_trips_bulk
 from src.db.database import TripData
 from datetime import datetime
+from src.helper_functions.broker import publish_message
 
 app = FastAPI()
 
@@ -35,6 +36,15 @@ async def upload_csv(file: UploadFile = File(...)):
         for col in required_columns:
             if col not in df.columns:
                 raise HTTPException(status_code=400, detail=f"Missing required column: {col}")
+
+        # TODO: Write the file in a shared store directory
+
+        # TODO: send to the rabbitmq which file has to be read.
+        publish_message(file.filename)
+        
+        # TODO: Create the consumer to read the information from the shared store point
+
+        # TODO: send the message back saindo in which status your request it
 
         db = SessionLocal()
         # Generates a list of TripDataModel, in which insert all the data in a single operation.
