@@ -36,17 +36,9 @@ async def upload_csv(file: UploadFile = File(...)):
 
         for chunk in np.array_split(df, 100):  # Splitting data into chunks
             publish_message(chunk.to_csv(index=False))
-
-
-
-        # TODO: Write the file in a shared store directory
         
-        # TODO: send to the rabbitmq which file has to be read.
-        
-        # TODO: Create the consumer to read the information from the shared store point
-
         # TODO: send the message back saindo in which status your request it
-
+        # This step basic could be a message to another queue in broadcast or even a request for an especific webhook
 
         # Return a success message or additional details as needed
         return {"message": "CSV file successfully validated", "columns": df.columns.tolist()}
