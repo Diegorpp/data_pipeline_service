@@ -2,13 +2,17 @@ FROM python:3.12.3
 
 WORKDIR /API
 
-COPY src main.py requirements-api.txt /API/
+# COPY src/ main.py requirements-api.txt /API/ # Fix src/ directory
+COPY . /API/
 
 RUN pip install -r requirements-api.txt
 
 EXPOSE 8000
 
-CMD ["tail", "-f", "/dev/null"]
+# CMD ["tail", "-f", "/dev/null"]
+
+CMD ["uvicorn","main:app","--host","0.0.0.0"]
 
 # CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--workers", "4", "--bind", "0.0.0.0:8000", "main:app"]
-# gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 0.0.0.0:8000 main:app
+# Usually for prodution I use gunicorn like: gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 0.0.0.0:8000 main:app
+# For debug purpuse use uvicorn (uvicorn main:app --host 0.0.0.0)

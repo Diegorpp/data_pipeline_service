@@ -4,11 +4,13 @@ services:
       context: .
       dockerfile: dockerfile_api
     container_name: data_pipeline_api
+    env_file:
+      - .env
     environment:
       - RABBITMQ_HOST=${RABBITMQ_HOST}
-      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
       - RABBITMQ_PORT=${RABBITMQ_PORT}
     ports:
       - 8000:8000
@@ -24,11 +26,13 @@ services:
       context: .
       dockerfile: dockerfile_consumer
     container_name: consumer
+    env_file:
+      - .env
     environment:
       - RABBITMQ_HOST=${RABBITMQ_HOST}
-      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
       - RABBITMQ_PORT=${RABBITMQ_PORT}
     volumes:
       - .:/Project
@@ -56,19 +60,16 @@ services:
       - d_private_network
 
   rabbitmq:
-    image: rabbitmq:4.0.2-management
+    image: rabbitmq:3.12-management # 4.0.2-management
     container_name: rabbitmq
     environment:
-      - RABBITMQ_HOST=${RABBITMQ_HOST}
-      - RABBITMQ_QUEUE_NAME=${RABBITMQ_QUEUE_NAME}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
-      - RABBITMQ_PORT=${RABBITMQ_PORT}
     ports:
       - 5672:5672
       - 15672:15672
-    volumes:
-      - ./src/data/rabbitmq_messages:/var/lib/rabbitmq
+    # volumes:
+    #   - ./src/data/rabbitmq_messages:/var/lib/rabbitmq
     networks:
       - d_private_network
 
